@@ -19,6 +19,7 @@ void setup() {
 
 void loop() {
   // playing with the timing
+  delay(20000);
   for(int i=0; i<1; i++){
     if (digitalRead(limit_pin) != HIGH) {
           // stop the motor
@@ -26,19 +27,22 @@ void loop() {
           delay(3000);
           
     } else {
+          digitalWrite(dir_pin, HIGH);
           analogWrite(step_pin, i);
-          delay(5);
+          delay(200);
     }
   }
+  delay(20000);
   for(int i=1; i>0; i--){
     if (digitalRead(limit_pin) != HIGH) {
           // stop the motor
           analogWrite(step_pin, 0);
           delay(3000);
     } else {
+          // issue with CC/CCW on dragon-driver, FIX
+          digitalWrite(dir_pin, LOW);
           analogWrite(step_pin, i);
-          delay(5);
+          delay(200);
     }
   }
-  delay(50000);
 }
