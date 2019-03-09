@@ -19,7 +19,6 @@ void setup() {
 
 void loop() {
   // playing with the timing
-  /*
   for(int i=0; i<1; i++){
     if (digitalRead(limit_pin) != HIGH) {
           // stop the motor
@@ -43,12 +42,3 @@ void loop() {
   }
   delay(50000);
 }
-  */
-  // DIR and STEP test
-  digitalWrite(dir_pin, HIGH);
-  analogWrite(step_pin, 1);
-  delay(5);
-  digitalWrite(dir_pin, LOW);
-  analogWrite(step_pin, 1);
-  delay(5);
-}  
