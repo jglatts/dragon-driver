@@ -5,7 +5,6 @@
  * Date: 3/11/2019
  *
  */
-#include <Adafruit_NeoPixel.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -13,7 +12,6 @@
 
 
 #define relay_pin 16
-#define pix_pin 5
 #define limit_pin 4
 #define NUM_PIX 12
 
@@ -25,7 +23,6 @@ const char *password = "";
 
 // Create a new Server and Neopixel instance
 ESP8266WebServer server(80);
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_PIX, pix_pin, NEO_GRB + NEO_KHZ800);
 
 
 /* HTML landing page */
@@ -117,8 +114,6 @@ void setup(void) {
     pinMode(relay_pin, OUTPUT);
     digitalWrite(relay_pin, LOW); // stepper motor is off
     randomSeed(analogRead(0));  // seed for random(), used for random PIXEL colors
-    pixels.begin();
-    pixels.show();
     Serial.begin(115200);
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
@@ -153,7 +148,7 @@ void setup(void) {
 }
 
 
-/* Loop -- Handles incoming clients*/
+/* Handles incoming clients*/
 void loop(void) {
     server.handleClient();
     MDNS.update();
