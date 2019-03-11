@@ -103,8 +103,8 @@ void handleNotFound() {
 
 
 void moveStepper() {
-    digitalWrite(relay_pin, HIGH);
-    server.send(200, "text/html", motor_html);
+    digitalWrite(relay_pin, HIGH);  // turn the relay on, which will close the signal pin on the dragon driver
+    server.send(200, "text/html", motor_html);  
 }
 
 
