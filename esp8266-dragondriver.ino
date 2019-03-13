@@ -1,10 +1,18 @@
 /*
  *
+ *  TEST PROGRAM TO MAKE SURE EVERYTHING WORKS
+ *
  * Author: John Glatts
- * Brief: Nodemcu webserver with stepper motor controls and data, testing to see if this jawnt works
+ * Brief: Nodemcu webserver with stepper motor controls and data
  * Date: 3/11/2019
  *
+ *
+ * ToDo:
+ *  - Add limitswitch to ESP for Tx/Rx between boards, just to tell when a cycle has been completed
+ *  - Check the delay between them
+ *
  */
+#include <Adafruit_NeoPixel.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -12,17 +20,25 @@
 
 
 #define relay_pin 16
+#define pix_pin 5
 #define limit_pin 4
 #define NUM_PIX 12
 
 
 // Strings for WiFi
-const char *ssid = "";
-const char *password = "";
+const char *ssid = "your-wifi";
+const char *password = "your-password";
+
+
+// keep track of cycles
+int cycles = 0;
+int new_cycles = 0;
+int all_cycles[1000];   // arbitrary size at first
 
 
 // Create a new Server and Neopixel instance
 ESP8266WebServer server(80);
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_PIX, pix_pin, NEO_GRB + NEO_KHZ800);
 
 
 /* HTML landing page */
@@ -102,18 +118,13 @@ void handleNotFound() {
 }
 
 
-void moveStepper() {
-    digitalWrite(relay_pin, HIGH);  // turn the relay on, which will close the signal pin on the dragon driver
-    server.send(200, "text/html", motor_html);  
-}
-
-
 /* Setup Everything Dawg */
 void setup(void) {
     pinMode(limit_pin, INPUT_PULLUP);
     pinMode(relay_pin, OUTPUT);
-    digitalWrite(relay_pin, LOW); // stepper motor is off
     randomSeed(analogRead(0));  // seed for random(), used for random PIXEL colors
+    pixels.begin();
+    pixels.show();
     Serial.begin(115200);
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
@@ -131,12 +142,11 @@ void setup(void) {
     Serial.println(ssid);
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
-
     if (MDNS.begin("esp8266")) {
         Serial.println("MDNS responder started");
     }
     server.on("/", handleRoot);
-   // server.on("/PixOn", flashLED); add this at some point, not needed right now
+    // server.on("/PixOn", flashLED); add this at some point, not needed right now
     server.on("/MoveStepper", moveStepper);
     server.onNotFound(handleNotFound);
     server.on("/about", []() {
@@ -148,8 +158,71 @@ void setup(void) {
 }
 
 
-/* Handles incoming clients*/
+/* Loop -- Handles incoming clients*/
 void loop(void) {
     server.handleClient();
     MDNS.update();
+}
+
+
+void moveStepper() {
+    // relay-motor on
+    digitalWrite(relay_pin, HIGH);
+
+    // make sure PIXEl is off
+    for (int i = 0; i < NUM_PIX; ++i) {
+        pixels.setPixelColor(i, pixels.Color(0, 0, 0));
+        pixels.show();
+    }
+
+    String step_html = "<!DOCTYPE html>";
+    step_html += "<html>";
+    step_html += "<head>";
+    step_html += "<meta http-equiv='refresh' content='3'/>";
+    step_html += "<style>";
+    step_html += "p {";
+    step_html += "font-size: 3em;";
+    step_html += "}";
+    step_html += "a {";
+    step_html += "font-size: 4em;";
+    step_html += "}";
+    step_html += "body {";
+    step_html += "background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088;";
+    step_html += "}";
+    step_html += "</style>";
+    step_html += "</head>";
+    step_html += "<body>";
+    step_html += "<p>JDG ESP SERVER</p>";
+    step_html += "<p># of Rotations: ";
+    step_html += new_cycles;
+    step_html += "</p>";
+    step_html += "<p>Please select a button below.</p>";
+    step_html += "<a href=\"/\">Home</a>";
+    step_html += "</br>";
+    step_html += "</body>";
+    step_html += "</html>";
+
+    if (cycles <= NUM_PIX && cycles > 0) {
+        for (int x = 1; x <= cycles; ++x) {
+            pixels.setPixelColor(x,  pixels.Color(255, 0, 0));
+            pixels.show();
+        }
+        //delay(1000);     check if delay is needed
+    } else {
+        for (int x = 1; x <= cycles; ++x) {
+            pixels.setPixelColor(x,  pixels.Color(0, 0, 0));
+            pixels.show();
+        }
+    }
+
+    server.send(200, "text/html", step_html);
+    new_cycles++;
+
+    // check if we have to change cycles
+    if (cycles > NUM_PIX) {
+        cycles = 0;
+    } else {
+        cycles++;
+    }
+
 }
