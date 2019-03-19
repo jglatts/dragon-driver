@@ -24,7 +24,7 @@ void loop() {
             digitalWrite(dir_relay, HIGH);
             analogWrite(step_pin, 0);
             delay(1000);
-            analogWrite(step_pin, 0);
+            analogWrite(step_pin, 64);
             delay(1400);
         } else {
             digitalWrite(dir_relay, LOW);
