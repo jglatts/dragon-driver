@@ -1,0 +1,21 @@
+#######################################
+# Syntax Coloring Map For DragonDriver
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+DragonDriver    KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin   KEYWORD2
+moveClockWise	KEYWORD2
+moveCounterClockWise	KEYWORD2
+stop	KEYWORD2
+
+
+
