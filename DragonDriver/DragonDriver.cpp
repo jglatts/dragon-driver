@@ -72,7 +72,7 @@ void DragonDriver::moveCounterClockWise(int steps){
     delay(1000);
 }
 
-
+/* change this xD */
 bool DragonDriver::hasLimitBeenReached() {
     // add more to this
     return digitalRead(_limit_pin == HIGH); // debug this --> hopefully returns true or false
