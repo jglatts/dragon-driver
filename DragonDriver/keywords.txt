@@ -6,7 +6,8 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-DragonDriver    KEYWORD1
+DragonDrvier   KEYWORD1
+
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -14,8 +15,11 @@ DragonDriver    KEYWORD1
 
 begin   KEYWORD2
 moveClockWise	KEYWORD2
+testDirection   KEYWORD2
 moveCounterClockWise	KEYWORD2
+testSpeed	KEYWORD2
 stop	KEYWORD2
+hasLimitBeenReached    KEYWORD2
 
 
 
