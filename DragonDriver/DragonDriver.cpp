@@ -3,9 +3,6 @@
  *  Author: John Glatts
  *  Date: 5/8/19
  *
- *  ToDo
- *      - add fns() for CW and CCW
- *
  */
 #include "Arduino.h"
 #include "DragonDriver.h"
@@ -54,27 +51,36 @@ void DragonDriver::testSpeed() {
 void DragonDriver::testDirection() {
     // keep stepping
     for(int i=0;; i++){
-        if (!hasLimitFrontBeenReached()) {
+        if (hasLimitFrontBeenReached()) {
             // stop the motor
             digitalWrite(_dir_pin, LOW);
             analogWrite(_step_pin, 100);
             delay(5000);
         }
-        else if (!hasLimitBackBeenReached()) {
+        else if (hasLimitBackBeenReached()) {
             // stop the motor
             digitalWrite(_dir_pin, HIGH);
             analogWrite(_step_pin, 100);
-            delay(5400);
+            delay(5000);
         }
         else {
             // small steps to increase and then eventually tap the limit switch
             digitalWrite(_dir_pin, HIGH);
-            analogWrite(_step_pin, 225);
+            analogWrite(_step_pin, 100);
             delay(10);  // testing optimal delay time
         }
     }
 }
 
+
+bool DragonDriver::hasLimitFrontBeenReached() {
+    return digitalRead(_limit_pin_front) != HIGH;
+}
+
+
+bool DragonDriver::hasLimitBackBeenReached() {
+    return digitalRead(_limit_pin_back) != HIGH;
+}
 
 
 /* Move the stepper clockwise, by the given steps */
@@ -123,11 +129,3 @@ void DragonDriver::moveCounterClockWise(int steps){
 }
 
 
-bool DragonDriver::hasLimitFrontBeenReached() {
-    return digitalRead(_limit_pin_front == HIGH);
-}
-
-
-bool DragonDriver::hasLimitBackBeenReached() {
-    return digitalRead(_limit_pin_front == HIGH); 
-}
