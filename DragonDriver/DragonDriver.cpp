@@ -55,7 +55,7 @@ void DragonDriver::testSpeed() {
 /* Test the Dir, Verifying that front and back movement is working */
 void DragonDriver::testDirection() {
     // keep stepping
-    for(int i=0;; i++){
+    for(;;){
         if (hasLimitFrontBeenReached()) {
             digitalWrite(_dir_pin, LOW);
             analogWrite(_step_pin, 100);
