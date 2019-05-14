@@ -4,6 +4,7 @@
  *  Date: 5/8/19
  *
  *  ToDo
+ *      - add fns() for CW and CCW
  *      - Figure out how to get both limit switches in sync
  *          - the front limit is clicked then b/c of the delay, it skips over the second limit switch
  *
@@ -78,7 +79,7 @@ void DragonDriver::findHome() {
     // move the motor away -- to not hit anything
     digitalWrite(_dir_pin, LOW);
     analogWrite(_step_pin, 100);
-    delay(10);
+    delay(500);
 
     do {
         // slowly find the limit switch
@@ -146,5 +147,3 @@ void DragonDriver::moveCounterClockWise(int steps){
     analogWrite(_step_pin, 0);
     delay(1000);
 }
-
-
