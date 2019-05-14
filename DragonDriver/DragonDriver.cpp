@@ -12,7 +12,6 @@
 #include "DragonDriver.h"
 
 
-
 /* Initialize the Dragon Driver */
 DragonDriver::DragonDriver(int step_pin, int dir_pin, int limit_pin_front, int limit_pin_back) {
     _step_pin = step_pin;
