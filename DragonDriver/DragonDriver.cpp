@@ -3,9 +3,14 @@
  *  Author: John Glatts
  *  Date: 5/8/19
  *
+ *  ToDo
+ *      - Figure out how to get both limit switches in sync
+ *          - the front limit is clicked then b/c of the delay, it skips over the second limit switch
+ *
  */
 #include "Arduino.h"
 #include "DragonDriver.h"
+
 
 
 /* Initialize the Dragon Driver */
@@ -52,24 +57,39 @@ void DragonDriver::testDirection() {
     // keep stepping
     for(int i=0;; i++){
         if (hasLimitFrontBeenReached()) {
-            // stop the motor
             digitalWrite(_dir_pin, LOW);
             analogWrite(_step_pin, 100);
-            delay(5000);
+            delay(750);
         }
         else if (hasLimitBackBeenReached()) {
-            // stop the motor
             digitalWrite(_dir_pin, HIGH);
             analogWrite(_step_pin, 100);
-            delay(5000);
+            delay(750);
         }
         else {
-            // small steps to increase and then eventually tap the limit switch
-            digitalWrite(_dir_pin, HIGH);
-            analogWrite(_step_pin, 100);
-            delay(10);  // testing optimal delay time
+            analogWrite(_step_pin, 0);
         }
     }
+}
+
+
+/* Find home position -- using the front limit switch */
+void DragonDriver::findHome() {
+
+    // move the motor away -- to not hit anything
+    digitalWrite(_dir_pin, LOW);
+    analogWrite(_step_pin, 100);
+    delay(10);
+
+    do {
+        // slowly find the limit switch
+        digitalWrite(_dir_pin, HIGH);
+        analogWrite(_step_pin, 100);
+        delay(8);
+    } while (!hasLimitFrontBeenReached());
+
+    // hold the position
+    analogWrite(_step_pin, 0);
 }
 
 
